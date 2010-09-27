@@ -25,3 +25,7 @@ splacnout (a:b:bs) = if c1 == c2 then
 
 setridit_splacnute :: [(Char, Integer)] -> [(Char, Integer)]
 setridit_splacnute = sortBy (compare `on` snd)
+
+-- zatim umime udelat tohle
+-- (setridit_splacnute . splacnout . spocitej_cetnost) "matematika"
+-- > [('k',1),('i',1),('e',1),('t',2),('m',2),('a',3)]
