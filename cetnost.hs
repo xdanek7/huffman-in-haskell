@@ -3,14 +3,17 @@
 import Data.List
 import Data.Function
 
-spocitej_cetnost :: [Char] -> [(Char, Integer)]
+type Slovo = [Char]
+type Pismenko = (Char, Integer)
+
+spocitej_cetnost :: Slovo -> [Pismenko]
 spocitej_cetnost = (cetnost . sort)
 
-cetnost :: [Char] -> [(Char, Integer)]
+cetnost :: [Char] -> [Pismenko]
 cetnost [a] = [(a, 1)]
 cetnost (a:as) = (cetnost as)++[(a, 1)]
 
-splacnout :: [(Char, Integer)] -> [(Char, Integer)]
+splacnout :: [Pismenko] -> [Pismenko]
 -- jak se líp ošetří pole délky 1?
 splacnout (a)
 	| length a == 1 = a
@@ -23,9 +26,11 @@ splacnout (a:b:bs) = if c1 == c2 then
 	where (c1, i1) = a
 	      (c2, i2) = b
 
-setridit_splacnute :: [(Char, Integer)] -> [(Char, Integer)]
+setridit_splacnute :: [Pismenko] -> [Pismenko]
 setridit_splacnute = sortBy (compare `on` snd)
 
 -- zatim umime udelat tohle
 -- (setridit_splacnute . splacnout . spocitej_cetnost) "matematika"
 -- > [('k',1),('i',1),('e',1),('t',2),('m',2),('a',3)]
+
+
