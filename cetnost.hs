@@ -40,16 +40,16 @@ setridit_splacnute = sortBy (compare `on` snd)
 --  let fronta = [buildTree x | x <- pole]
 --  zpracujFrontu fronta
 --   > [Node {hodnota = (' ',4),
--->		levy = Node {hodnota = ('e',2),
--->			levy = EmptyTree,
--->			pravy = EmptyTree},
--->		pravy = Node {hodnota = (' ',2),
--->			levy = Node {hodnota = ('s',1),
--->				levy = EmptyTree,
--->				pravy = EmptyTree},
--->			pravy = Node {hodnota = ('p',1),
--->				levy = EmptyTree,
--->				pravy = EmptyTree}}}]
+-- >		levy = Node {hodnota = ('e',2),
+-- >			levy = EmptyTree,
+-- >			pravy = EmptyTree},
+-- >		pravy = Node {hodnota = (' ',2),
+-- >			levy = Node {hodnota = ('s',1),
+-- >				levy = EmptyTree,
+-- >				pravy = EmptyTree},
+-- >			pravy = Node {hodnota = ('p',1),
+-- >				levy = EmptyTree,
+-- >				pravy = EmptyTree}}}]
 
 
 zpracujFrontu :: [Tree Pismenko] -> [Tree Pismenko]
@@ -58,9 +58,27 @@ zpracujFrontu (a:b:[]) = [spojStromy a b]
 zpracujFrontu (a:b:cs) = zpracujFrontu $ zatridStromDoFronty (spojStromy a b) cs
 
 -- A to vše směřuje k téhle funkci. Tadá!
-stromCetnosti :: [Char] -> [Tree Pismenko]
-stromCetnosti a = zpracujFrontu fronta
+stromCetnosti :: [Char] -> Tree Pismenko
+stromCetnosti a = head $ zpracujFrontu fronta
 	where
 		fronta = [buildTree x | x <- pole]
 			where
 				pole = (setridit_splacnute . splacnout . spocitej_cetnost) a
+
+-- Vypise strom cetnosti alespon trochu slusnym zpusobem
+debugTree = putStr . unlines . vypisUzel
+
+vypisUzel :: Tree Pismenko -> [String]
+vypisUzel EmptyTree = ["EmptyTree"]
+--vypisUzel (Node a l r) = [show a] ++ lev ++ prav
+--	where
+---		lev = ["\t levy: " ++ head levy] ++ ["\t" ++ x | x <- tail levy]
+--		prav = ["\t pravy: " ++ head pravy] ++ ["\t" ++ x | x <- tail pravy]
+--			where
+--				levy = vypisUzel l
+--				pravy = vypisUzel r
+
+vypisUzel (Node a l r) = [show a] ++ levy ++ pravy
+	where
+		levy = map ("\t" ++) (vypisUzel l) 
+		pravy = map ("\t" ++) (vypisUzel r)
