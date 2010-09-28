@@ -1,16 +1,18 @@
+module Tree where
+
+import Typy
+
 data Tree a = EmptyTree | Node {hodnota :: a,
 		levy :: (Tree a),
 		pravy :: (Tree a)
 		} deriving (Show) --,Ord
-
-type Slovo = [Char]
-type Pismenko = (Char, Integer)
 
 singleton :: a -> Tree a
 singleton a = Node a EmptyTree EmptyTree
 
 buildTree :: Pismenko -> Tree Pismenko
 buildTree a = singleton a
+
 spojStromy a b = Node (' ', vaha) a b
 	where
 		vaha = snd (hodnota a) + snd (hodnota b)

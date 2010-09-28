@@ -1,10 +1,12 @@
 --cetnost :: [char] -> [(char, int)]
 
+-- systémové
 import Data.List
 import Data.Function
 
-type Slovo = [Char]
-type Pismenko = (Char, Integer)
+-- moje
+import Tree
+import Typy
 
 spocitej_cetnost :: Slovo -> [Pismenko]
 spocitej_cetnost = (cetnost . sort)
