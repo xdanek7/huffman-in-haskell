@@ -60,6 +60,7 @@ zpracujFrontu (a:b:cs) = zpracujFrontu $ zatridStromDoFronty (spojStromy a b) cs
 
 -- A to vše směřuje k téhle funkci. Tadá!
 --FIXME: potřebuji mít někde nějaký znak EOF, konce souboru, aby se dostal do kódovací tabulky
+--FIXME: a znak pro vnitřní uzly tabulky
 stromCetnosti :: [Char] -> Tree Pismenko
 stromCetnosti a = head $ zpracujFrontu fronta
 	where
