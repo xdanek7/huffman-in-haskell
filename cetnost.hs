@@ -35,4 +35,32 @@ setridit_splacnute = sortBy (compare `on` snd)
 -- (setridit_splacnute . splacnout . spocitej_cetnost) "matematika"
 -- > [('k',1),('i',1),('e',1),('t',2),('m',2),('a',3)]
 
+-- buildění fronty
+--  let pole = (setridit_splacnute . splacnout . spocitej_cetnost) "pees"
+--  let fronta = [buildTree x | x <- pole]
+--  zpracujFrontu fronta
+--   > [Node {hodnota = (' ',4),
+-->		levy = Node {hodnota = ('e',2),
+-->			levy = EmptyTree,
+-->			pravy = EmptyTree},
+-->		pravy = Node {hodnota = (' ',2),
+-->			levy = Node {hodnota = ('s',1),
+-->				levy = EmptyTree,
+-->				pravy = EmptyTree},
+-->			pravy = Node {hodnota = ('p',1),
+-->				levy = EmptyTree,
+-->				pravy = EmptyTree}}}]
 
+
+zpracujFrontu :: [Tree Pismenko] -> [Tree Pismenko]
+zpracujFrontu (a:[]) = [a]
+zpracujFrontu (a:b:[]) = [spojStromy a b]
+zpracujFrontu (a:b:cs) = zpracujFrontu $ zatridStromDoFronty (spojStromy a b) cs
+
+-- A to vše směřuje k téhle funkci. Tadá!
+stromCetnosti :: [Char] -> [Tree Pismenko]
+stromCetnosti a = zpracujFrontu fronta
+	where
+		fronta = [buildTree x | x <- pole]
+			where
+				pole = (setridit_splacnute . splacnout . spocitej_cetnost) a

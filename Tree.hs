@@ -13,6 +13,7 @@ singleton a = Node a EmptyTree EmptyTree
 buildTree :: Pismenko -> Tree Pismenko
 buildTree a = singleton a
 
+spojStromy :: Tree Pismenko -> Tree Pismenko -> Tree Pismenko
 spojStromy a b = Node (' ', vaha) a b
 	where
 		vaha = snd (hodnota a) + snd (hodnota b)
