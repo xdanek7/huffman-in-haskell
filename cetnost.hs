@@ -7,6 +7,7 @@ import Data.Function
 -- moje
 import Tree
 import Typy
+import Huff
 
 spocitej_cetnost :: Slovo -> [Pismenko]
 spocitej_cetnost = (cetnost . sort)
@@ -58,6 +59,7 @@ zpracujFrontu (a:b:[]) = [spojStromy a b]
 zpracujFrontu (a:b:cs) = zpracujFrontu $ zatridStromDoFronty (spojStromy a b) cs
 
 -- A to vše směřuje k téhle funkci. Tadá!
+--FIXME: potřebuji mít někde nějaký znak EOF, konce souboru, aby se dostal do kódovací tabulky
 stromCetnosti :: [Char] -> Tree Pismenko
 stromCetnosti a = head $ zpracujFrontu fronta
 	where
@@ -66,6 +68,7 @@ stromCetnosti a = head $ zpracujFrontu fronta
 				pole = (setridit_splacnute . splacnout . spocitej_cetnost) a
 
 -- Vypise strom cetnosti alespon trochu slusnym zpusobem
+debugTree :: Tree Pismenko -> IO ()
 debugTree = putStr . unlines . vypisUzel
 
 vypisUzel :: Tree Pismenko -> [String]

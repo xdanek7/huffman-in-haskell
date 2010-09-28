@@ -14,6 +14,7 @@ buildTree :: Pismenko -> Tree Pismenko
 buildTree a = singleton a
 
 spojStromy :: Tree Pismenko -> Tree Pismenko -> Tree Pismenko
+--FIXME: jako neznak se ' ' rozhodně použít nedá. Vlastní typ? None | Char a?
 spojStromy a b = Node (' ', vaha) a b
 	where
 		vaha = snd (hodnota a) + snd (hodnota b)
