@@ -21,3 +21,13 @@ prefixujNode prefix (Node a l p) = [(fst a, prefix)] ++ leveprefixy ++ pravepref
 --   > [(' ',""),('e',"1"),(' ',"0"),('s',"01"),('p',"00")]
 
 --FIXME znak ' ' a EOF, jak je popsáno ve fixme v cetnost.hs
+
+-- ** "Definujte funkce hEncode::String→[Word8] a hDecode::[Word8]→String, **
+-- *    které budou převádět znakové řetězce do binárních dat a naopak."    *
+-- **************************************************************************
+
+hEncode::String -> [Word8]
+hEncode = undefined
+
+hDecode::[Word8] -> String
+hDecode = undefined
