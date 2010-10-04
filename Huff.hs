@@ -1,6 +1,7 @@
 module Huff where
 
 import Data.Word
+import qualified Data.Map
 
 import Tree
 import Typy
@@ -22,7 +23,15 @@ prefixujNode prefix (Node a l p) = [(fst a, prefix)] ++ leveprefixy ++ pravepref
 --  prefixovaTabulka $ stromCetnosti "pees"
 --   > [(' ',""),('e',"1"),(' ',"0"),('s',"01"),('p',"00")]
 
+-- Ukázka s mapou (let mapa = ...)
+--  Data.Map.fromList $ prefixovaTabulka $ stromCetnosti "pees"
+--   > fromList [(' ',"0"),('e',"1"),('p',"00"),('s',"01")]
+--  Data.Map.lookup 's' mapa
+--     > Just "01"
+
 --FIXME znak ' ' a EOF, jak je popsáno ve fixme v cetnost.hs
+
+
 
 {-
    ** "Definujte funkce hEncode::String→[Word8] a hDecode::[Word8]→String, **
