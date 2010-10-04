@@ -1,5 +1,7 @@
 module Huff where
 
+import Data.Word
+
 import Tree
 import Typy
 
@@ -22,9 +24,11 @@ prefixujNode prefix (Node a l p) = [(fst a, prefix)] ++ leveprefixy ++ pravepref
 
 --FIXME znak ' ' a EOF, jak je popsáno ve fixme v cetnost.hs
 
--- ** "Definujte funkce hEncode::String→[Word8] a hDecode::[Word8]→String, **
--- *    které budou převádět znakové řetězce do binárních dat a naopak."    *
--- **************************************************************************
+{-
+   ** "Definujte funkce hEncode::String→[Word8] a hDecode::[Word8]→String, **
+   *    které budou převádět znakové řetězce do binárních dat a naopak."    *
+   **************************************************************************
+-}
 
 hEncode::String -> [Word8]
 hEncode = undefined
