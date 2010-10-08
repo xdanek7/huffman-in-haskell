@@ -1,4 +1,5 @@
---cetnost :: [char] -> [(char, int)]
+module Cetnost
+where
 
 -- systémové
 import Data.List
@@ -8,7 +9,7 @@ import Data.Char
 -- moje
 import Tree
 import Typy
-import Huff
+--import Huff
 
 spocitej_cetnost :: [Char] -> [Pismenko]
 spocitej_cetnost = (splacnout. cetnost . sort)
