@@ -6,31 +6,20 @@ import qualified Data.Map
 import Tree
 import Typy
 
--- zatím kašlu na bity a byty, budu je ukládat jako Chary a Stringy
-prefixovaTabulka :: Tree Pismenko -> [(Char, String)]
---tohle je ok, v kořenu nebude nikdy uloženo pismeno, protože budeme ještě přidávat znak EOF
-prefixovaTabulka t = prefixujNode "" t
+-- typ pro uložení jednoho bitu
+data Bit = H | L
+  deriving (Eq, Read, Show)
 
-prefixujNode :: String -> Tree Pismenko -> [(Char, String)]
-prefixujNode prefix (Node a EmptyTree EmptyTree) = [(fst a, prefix)]
-prefixujNode prefix (Node a l p) = [(fst a, prefix)] ++ leveprefixy ++ praveprefixy
-	where
-		leveprefixy = prefixujNode (prefix ++ "1") l 
-		praveprefixy = prefixujNode (prefix ++ "0") p
-
--- Ukázka
---  stromCetnosti "pees"
---  prefixovaTabulka $ stromCetnosti "pees"
---   > [(' ',""),('e',"1"),(' ',"0"),('s',"01"),('p',"00")]
-
--- Ukázka s mapou (let mapa = ...)
---  Data.Map.fromList $ prefixovaTabulka $ stromCetnosti "pees"
---   > fromList [(' ',"0"),('e',"1"),('p',"00"),('s',"01")]
---  Data.Map.lookup 's' mapa
---     > Just "01"
-
---FIXME znak ' ' a EOF, jak je popsáno ve fixme v cetnost.hs
-
+prefixovaTabulka :: Strom a -> [(a, [Bit])]
+--tohle je ok, v kořenu nebude nikdy uloženo pismeno, protože ještě přidáváme znak EOF
+prefixovaTabulka t = prefixujNode [] t
+  where
+    prefixujNode :: [Bit] -> Strom a -> [(a, [Bit])]
+    prefixujNode prefix (List v h) = [(h, prefix)]
+    prefixujNode prefix (Uzel v l p) = leveprefixy ++ praveprefixy
+      where
+        leveprefixy = prefixujNode (prefix ++ [H]) l 
+        praveprefixy = prefixujNode (prefix ++ [L]) p
 
 
 {-

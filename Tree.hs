@@ -2,40 +2,52 @@ module Tree where
 
 import Typy
 
-data Tree a = EmptyTree | Node {hodnota :: a,
-		levy :: (Tree a),
-		pravy :: (Tree a)
-		} deriving (Show) --,Ord
+data Strom a = List {vaha :: Integer,
+                     hodnota :: a}
+             | Uzel {vaha :: Integer,
+                     _levy :: (Strom a),
+                     _pravy :: (Strom a)
+                     } deriving (Eq, Ord, Show)
+                 
+vytvorList :: Integer -> a -> Strom a
+vytvorList vaha' hodnota' = List {vaha = vaha'
+                                  ,hodnota = hodnota'}
 
-singleton :: a -> Tree a
-singleton a = Node a EmptyTree EmptyTree
+spojStromy :: Strom a -> Strom a -> Strom a
+spojStromy a b = Uzel {vaha = vaha a + vaha b
+                        ,_levy = a
+                        ,_pravy = b}
 
-buildTree :: Pismenko -> Tree Pismenko
-buildTree a = singleton a
-
-spojStromy :: Tree Pismenko -> Tree Pismenko -> Tree Pismenko
---FIXME: jako neznak se ' ' rozhodně použít nedá. Vlastní typ? None | Char a?
-spojStromy a b = Node (' ', vaha) a b
+-- Předpokládá, že seznam už je setříděný vzestupně
+-- FIXME: Nepodařilo se mi napsat to bez požadavku na porovnatelnost a,
+   -- přitom by na ní vůbec nemělo záležet
+zatridStromDoSeznamu :: (Ord a) => Strom a -> [Strom a] -> [Strom a]
+zatridStromDoSeznamu a xs = mensi ++ [a] ++ vetsi
 	where
-		vaha = snd (hodnota a) + snd (hodnota b)
---Ukázka:
---let a = singleton ('r', 6)
---let b = singleton ('v', 5)
---spojStromy a b
--- >Node {hodnota = (' ',11), levy = Node {hodnota = ('r',6), levy...
+		mensi = [c | c <- xs, c < a || c == a]
+		vetsi = [d | d <- xs, d > a]
 
--- Předpokládá, že fronta už je setříděná vzestupně
-zatridStromDoFronty :: Tree Pismenko -> [Tree Pismenko] -> [Tree Pismenko]
-zatridStromDoFronty a xs = mensi ++ [a] ++ vetsi
-	where
-		-- FIXME: Vyřešit tohle porovnávání Písmenek (,)
-		mensi = [c | c <- xs, snd (hodnota c) < snd (hodnota a) || snd (hodnota c) == snd (hodnota a)]
-		vetsi = [d | d <- xs, snd (hodnota d) > snd (hodnota a) ]
-
+vybuildiSuperStrom :: (Ord a) => [Strom a] -> [Strom a]
+vybuildiSuperStrom (a:[]) = [a]
+vybuildiSuperStrom (a:b:[]) = [spojStromy a b]
+vybuildiSuperStrom (a:b:cs) = vybuildiSuperStrom $ zatridStromDoSeznamu (spojStromy a b) cs
+		
 -- Ukázka:
---  let prvek = singleton('g', 6)
---  let pole = [singleton ('e', 5), singleton('f', 7)]
---  zatridStromDoFronty prvek pole
---   > [Node {hodnota = ('e',5), levy = EmptyTree, pravy = EmptyTree},
---   >  Node {hodnota = ('g',6), levy = EmptyTree, pravy = EmptyTree},
---   >  Node {hodnota = ('f',7), levy = EmptyTree, pravy = EmptyTree}]
+--  let prvek = List 6 'e'
+--  let pole = [List 5 'f', List 20 'g']
+--  zatridStromDoSeznamu prvek pole
+--   > [List {vaha = 5, hodnota = 'f'},
+--   >  List {vaha = 6, hodnota = 'e'},
+--   >  List {vaha = 20, hodnota = 'g'}]
+
+-- Vypise strom cetnosti alespon trochu slusnym zpusobem
+debugTree :: (Show a) => Strom a -> IO ()
+debugTree = (putStr . unlines . vypisUzel)
+  where
+    vypisUzel :: (Show a) => Strom a -> [String]
+    vypisUzel (List v h) = ["| " ++ show h ++ " : " ++ show v]--["Váha: " ++ show v ++ " hodnota: " ++ show h]
+    vypisUzel (Uzel v l p) = ["`\\"] ++ levy ++ pravy
+	where
+		levy = map ("\t" ++) (vypisUzel l) 
+		pravy = map ("\t" ++) (vypisUzel p)
+
