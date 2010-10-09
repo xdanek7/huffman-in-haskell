@@ -21,7 +21,9 @@ prefixovaTabulka t = prefixujNode [] t
         praveprefixy = prefixujNode (prefix ++ [L]) p
 
 -- Odmítám se babrat se stromem prefixů. A hašová tabulka je v idealním případě dokonce lepší - O(1)
+-- Jenže na dekodování to asi potřebovat budu
 prefixovaMapa = (Data.Map.fromList . prefixovaTabulka)
+
 
 {-
    ** "Definujte funkce hEncode::String→[Word8] a hDecode::[Word8]→String, **
@@ -29,12 +31,37 @@ prefixovaMapa = (Data.Map.fromList . prefixovaTabulka)
    **************************************************************************
 -}
 
---hEncode::String -> [Word8]
+hEncode::String -> [Word8]
 hEncode text = prepracujBityNaBajty $ rozdelBityPoOsmi seznambitu
   where
-    mapa = prefixovaMapa $ stromCetnosti text
-    seznambitu = foldl krok [] text
+    strom = stromCetnosti text
+    mapa = prefixovaMapa strom
+    seznambitu = foldl krok [] text'
       where krok acc x = acc ++ (fromJust (Data.Map.lookup x mapa))
+            text' = text ++ ['\EOT']
 
 hDecode::[Word8] -> String
 hDecode = undefined
+
+--deoduje první písmenko
+hDecode'' :: Strom Char -> [Word8] -> [Char]
+hDecode'' strom bajty = dekodujStromem strom strom seznambitu
+  where
+    seznambitu = concat $ prepracujBajtyNaBity bajty
+    dekodujStromem :: Strom Char -> Strom Char -> [Bit] -> [Char]
+    dekodujStromem celystrom (List v h) bity
+      | h /= '\EOT' = h : dekodujStromem celystrom celystrom bity
+      | otherwise = []
+    dekodujStromem celystrom strom bity
+      | head bity == H = dekodujStromem celystrom (_levy strom) (tail bity)
+      | head bity == L = dekodujStromem celystrom (_pravy strom) (tail bity)
+      
+{--
+
+let text = "semprase"
+let strom = stromCetnosti text
+let enc = hEncode text
+
+hDecode'' strom enc
+> "semprase" !!!!!!!!!!!!!!!!!!!!!!!!!! JO!
+-}
