@@ -7,7 +7,7 @@ data Strom a = List {vaha :: Integer,
              | Uzel {vaha :: Integer,
                      _levy :: (Strom a),
                      _pravy :: (Strom a)
-                     } deriving (Eq, Ord, Show)
+                     } deriving (Eq, Ord, Show, Read)
                  
 vytvorList :: Integer -> a -> Strom a
 vytvorList vaha' hodnota' = List {vaha = vaha'
