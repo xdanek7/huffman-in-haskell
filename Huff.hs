@@ -1,36 +1,28 @@
 module Huff where
 
 import Data.Word
+import Data.Maybe
 import qualified Data.Map
 
+import Cetnost
 import Tree
 import Typy
+import Bity
 
--- zatím kašlu na bity a byty, budu je ukládat jako Chary a Stringy
-prefixovaTabulka :: Tree Pismenko -> [(Char, String)]
---tohle je ok, v kořenu nebude nikdy uloženo pismeno, protože budeme ještě přidávat znak EOF
-prefixovaTabulka t = prefixujNode "" t
+prefixovaTabulka :: Strom a -> [(a, [Bit])]
+--tohle je ok, v kořenu nebude nikdy uloženo pismeno, protože prázdný řetězec odmítneme a jinak ještě přidáváme znak EOT
+prefixovaTabulka t = prefixujNode [] t
+  where
+    prefixujNode :: [Bit] -> Strom a -> [(a, [Bit])]
+    prefixujNode prefix (List v h) = [(h, prefix)]
+    prefixujNode prefix (Uzel v l p) = leveprefixy ++ praveprefixy
+      where
+        leveprefixy = prefixujNode (prefix ++ [H]) l 
+        praveprefixy = prefixujNode (prefix ++ [L]) p
 
-prefixujNode :: String -> Tree Pismenko -> [(Char, String)]
-prefixujNode prefix (Node a EmptyTree EmptyTree) = [(fst a, prefix)]
-prefixujNode prefix (Node a l p) = [(fst a, prefix)] ++ leveprefixy ++ praveprefixy
-	where
-		leveprefixy = prefixujNode (prefix ++ "1") l 
-		praveprefixy = prefixujNode (prefix ++ "0") p
-
--- Ukázka
---  stromCetnosti "pees"
---  prefixovaTabulka $ stromCetnosti "pees"
---   > [(' ',""),('e',"1"),(' ',"0"),('s',"01"),('p',"00")]
-
--- Ukázka s mapou (let mapa = ...)
---  Data.Map.fromList $ prefixovaTabulka $ stromCetnosti "pees"
---   > fromList [(' ',"0"),('e',"1"),('p',"00"),('s',"01")]
---  Data.Map.lookup 's' mapa
---     > Just "01"
-
---FIXME znak ' ' a EOF, jak je popsáno ve fixme v cetnost.hs
-
+-- Odmítám se babrat se stromem prefixů. A hašová tabulka je v idealním případě dokonce lepší - O(1)
+-- Jenže na dekodování to asi potřebovat budu
+prefixovaMapa = (Data.Map.fromList . prefixovaTabulka)
 
 
 {-
@@ -40,7 +32,36 @@ prefixujNode prefix (Node a l p) = [(fst a, prefix)] ++ leveprefixy ++ pravepref
 -}
 
 hEncode::String -> [Word8]
-hEncode = undefined
+hEncode text = prepracujBityNaBajty $ rozdelBityPoOsmi seznambitu
+  where
+    strom = stromCetnosti text
+    mapa = prefixovaMapa strom
+    seznambitu = foldl krok [] text'
+      where krok acc x = acc ++ (fromJust (Data.Map.lookup x mapa))
+            text' = text ++ ['\EOT']
 
 hDecode::[Word8] -> String
 hDecode = undefined
+
+--deoduje první písmenko
+hDecode'' :: Strom Char -> [Word8] -> [Char]
+hDecode'' strom bajty = dekodujStromem strom strom seznambitu
+  where
+    seznambitu = concat $ prepracujBajtyNaBity bajty
+    dekodujStromem :: Strom Char -> Strom Char -> [Bit] -> [Char]
+    dekodujStromem celystrom (List v h) bity
+      | h /= '\EOT' = h : dekodujStromem celystrom celystrom bity
+      | otherwise = []
+    dekodujStromem celystrom strom bity
+      | head bity == H = dekodujStromem celystrom (_levy strom) (tail bity)
+      | head bity == L = dekodujStromem celystrom (_pravy strom) (tail bity)
+      
+{--
+
+let text = "semprase"
+let strom = stromCetnosti text
+let enc = hEncode text
+
+hDecode'' strom enc
+> "semprase" !!!!!!!!!!!!!!!!!!!!!!!!!! JO!
+-}
