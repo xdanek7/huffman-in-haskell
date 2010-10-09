@@ -30,6 +30,21 @@ prepracujBityNaBajty x = map spoj x
       | x == H = bit (length xs) .|. spoj xs
       | x == L = spoj xs
 
+
+prepracujBajtyNaBity :: [Data.Word.Word8] -> [[Bit]]
+prepracujBajtyNaBity = map bajtNaBity
+
+
+bajtNaBity :: Data.Word.Word8 -> [Bit]
+bajtNaBity i = map (f i) bb
+  where
+    bb = [7,6..0] 
+    f :: Data.Word.Word8 -> Int -> Bit
+    f i b = if testBit i b
+            then H
+            else L
+
+
 {--    
 (prepracujBityNaBajty . rozdelBityPoOsmi) [H,H,H,H]
 [240]
