@@ -43,7 +43,7 @@ hEncode text = prepracujBityNaBajty $ rozdelBityPoOsmi seznambitu
 hDecode::[Word8] -> String
 hDecode = undefined
 
---deoduje první písmenko
+--dekoduje první písmenko
 hDecode'' :: Strom Char -> [Word8] -> [Char]
 hDecode'' strom bajty = dekodujStromem strom strom seznambitu
   where
