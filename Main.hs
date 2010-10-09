@@ -35,12 +35,12 @@ encode soubor text = do
   --let hlavicka = ByteString.pack [0x68, 0x75, 0x66, 0x66, 0x0D, 0x0A, 0x1A, 0x0A]
   let oddelovac = ByteString.pack [0x04]
   let strom = ByteStringChar8.pack $ show $ stromCetnosti text
-  --let huff = ByteString.pack $ hEncode text
+  let huff = ByteString.pack $ hEncode text
   --ByteString.hPut handle hlavicka
   --ByteString.hPut handle oddelovac
   ByteStringChar8.hPut handle strom
   ByteString.hPut handle oddelovac
-  --ByteString.hPut handle huff
+  ByteString.hPut handle huff
   IO.hClose handle
 --  ByteString.hPut handle oddelovac
   

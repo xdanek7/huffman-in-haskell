@@ -3,6 +3,7 @@ module Huff where
 import Data.Word
 import Data.Maybe
 import qualified Data.Map
+import Data.List
 
 import Cetnost
 import Tree
@@ -36,8 +37,8 @@ hEncode text = prepracujBityNaBajty $ rozdelBityPoOsmi seznambitu
   where
     strom = stromCetnosti text
     mapa = prefixovaMapa strom
-    seznambitu = foldl krok [] text'
-      where krok acc x = acc ++ (fromJust (Data.Map.lookup x mapa))
+    seznambitu = foldr krok [] text'
+      where krok x acc = (fromJust (Data.Map.lookup x mapa)) ++ acc
             text' = text ++ ['\EOT']
 
 hDecode::[Word8] -> String
