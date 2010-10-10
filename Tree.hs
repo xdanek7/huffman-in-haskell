@@ -1,6 +1,7 @@
 module Tree where
 
 import Typy
+import Data.List
 
 data Strom a = List {vaha :: Integer,
                      hodnota :: a}
