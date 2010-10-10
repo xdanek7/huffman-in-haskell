@@ -31,7 +31,7 @@ zatridStromDoSeznamu a xs = mensi ++ [a] ++ vetsi
 vybuildiSuperStrom :: (Ord a) => [Strom a] -> [Strom a]
 vybuildiSuperStrom (a:[]) = [a]
 vybuildiSuperStrom (a:b:[]) = [spojStromy a b]
-vybuildiSuperStrom (a:b:cs) = vybuildiSuperStrom $ zatridStromDoSeznamu (spojStromy a b) cs
+vybuildiSuperStrom (a:b:cs) = vybuildiSuperStrom $ insert (spojStromy a b) cs
 		
 -- Ukázka:
 --  let prvek = List 6 'e'
