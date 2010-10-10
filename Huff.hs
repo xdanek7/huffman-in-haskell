@@ -54,16 +54,16 @@ hDecode = undefined
 
 --dekoduje první písmenko
 hDecode'' :: Strom Char -> [Word8] -> [Char]
-hDecode'' strom bajty = dekodujStromem strom strom seznambitu
+hDecode'' strom bajty = dekodujStromem strom seznambitu
   where
     seznambitu = concat $ prepracujBajtyNaBity bajty
-    dekodujStromem :: Strom Char -> Strom Char -> [Bit] -> [Char]
-    dekodujStromem celystrom (List v h) bity
-      | h /= '\EOT' = h : dekodujStromem celystrom celystrom bity
+    dekodujStromem :: Strom Char -> [Bit] -> [Char]
+    dekodujStromem (List v h) bity
+      | h /= '\EOT' = h : dekodujStromem strom bity
       | otherwise = []
-    dekodujStromem celystrom strom bity
-      | head bity == H = dekodujStromem celystrom (_levy strom) (tail bity)
-      | head bity == L = dekodujStromem celystrom (_pravy strom) (tail bity)
+    dekodujStromem strom bity
+      | head bity == H = dekodujStromem (_levy strom) (tail bity)
+      | head bity == L = dekodujStromem (_pravy strom) (tail bity)
       
 {--
 
