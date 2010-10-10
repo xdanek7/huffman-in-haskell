@@ -41,6 +41,14 @@ hEncode text = prepracujBityNaBajty $ rozdelBityPoOsmi seznambitu
       where krok x acc = (fromJust (Data.Map.lookup x mapa)) ++ acc
             text' = text ++ ['\EOT']
 
+hEncode''':: Strom Char -> String -> [Word8]
+hEncode''' strom text = prepracujBityNaBajty $ rozdelBityPoOsmi seznambitu
+  where
+    mapa = prefixovaMapa strom
+    seznambitu = foldr krok [] text'
+      where krok x acc = (fromJust (Data.Map.lookup x mapa)) ++ acc
+            text' = text ++ ['\EOT']
+
 hDecode::[Word8] -> String
 hDecode = undefined
 

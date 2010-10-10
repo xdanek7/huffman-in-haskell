@@ -34,11 +34,12 @@ encode soubor text = do
   handle <- IO.openBinaryFile soubor IO.WriteMode
   --let hlavicka = ByteString.pack [0x68, 0x75, 0x66, 0x66, 0x0D, 0x0A, 0x1A, 0x0A]
   let oddelovac = ByteString.pack [0x04]
-  let strom = ByteStringChar8.pack $ show $ stromCetnosti text
-  let huff = ByteString.pack $ hEncode text
+  let strom = stromCetnosti text
+  let bstrom = ByteStringChar8.pack $ show strom
+  let huff = ByteString.pack $ hEncode''' strom text
   --ByteString.hPut handle hlavicka
   --ByteString.hPut handle oddelovac
-  ByteStringChar8.hPut handle strom
+  ByteStringChar8.hPut handle bstrom
   ByteString.hPut handle oddelovac
   ByteString.hPut handle huff
   IO.hClose handle
