@@ -1,0 +1,67 @@
+Popis algoritmu
+
+Program můžeme rozdělit na logické celky.
+
+Ten první je funkce, která vypočte četnosti jednotlivých znaků v textu.
+
+Druhá část je potom funkce, která na základě tabulky četností znaků vytvoří Prefixový strom
+
+Zakódování textu je provedeno tak, že se z prefixového stromu vytvoří slovník a každé slovo se převede na sekvenci bitů jak je definováno ve slovníku
+
+Huffmanův algoritmus.
+
+David Huffman PhD student na MIT, když jeden z profesorů nabísl studentům že jim odpustí závěrečnou zkoušku ze svého předmětu, když vuřeší následující úkol.
+
+"The problem was to reduce to the absolute minimum the average number of questions necessary to identify one message—of document, or other object—out of a set of messages, when those messages might not appear with equal frequency, and when the questions had to be phrased so that they could be answered only with either ‘yes’ or ‘no.’ Because computers and modern communications systems use ‘yes/no’ on ‘on/off’ signal almost exclusively, this coding procedure has enormous practical significance in those areas of application."
+
+Průlom nastal, když si Huffman uvědomil, že vytvořit kodovací strom je velmi jednoduché, pokud se postupuje od listů ke kořeni a nikoli od kořene k listům, o což se doposud neúspěšně pokoušeli všichni ostatní, včetně Huffmanova profesora 
+
+V té chvíl něvěděl, že na problému si před ním bez výsledku pracovala spousta význačných odborníků, mimo jiné i profesor, který jim úlohu zadal.
+
+(historii huffmanova kódování pěkně sepsal samotý David Huffman http://www.huffmancoding.com/my-family/my-uncle/david-huffman
+a princip algoritmu vysvětlil Huffmannův vnuk http://www.huffmancoding.com/my-family/my-uncle/huffman-algorithm)
+
+Vstup a výstup
+
+Kódování
+
+Program byl vyzkoušen v interpretrech Hugs i GHCi.
+
+Moduly
+
+    * Main.hs
+          o modul Main obsahuje funkci "main", která je hlavním vstupem programu a stará se o zpracování pametrů
+    * Bity.hs
+          o tento modul obsahuje funkce související s reprezentací binárních hodnot v programu. Pro práci s daty jako se sekvencí bitů jsem shledal datový typ nevhodný a vytvořil si vlastní. neshledal jsem
+            totiž žádný důvod pro rozdělení programu do více modulů; program je stále
+            přehledný
+		Cetnost.hs modul pro vybudování stromu četnosti, obsahuje funkce
+	-
+	.
+		Tree.hs modul pro práci se stromem prefixů. Spojuje prioritní fronty
+		Typy.hs rozdělení programu do modulů si vynutilo vyčlenit týpové definice do samostatného modulu, aby se tak zabránilo opakování
+Formát vstupu
+
+    * Všechny .txt soubory, které se nachází v adresáři s programem jsou považovány za potenciální
+      vstupy (slovníky). Jejich seznam je k výběru uživateli nabídnut v průběhu programu, není tedy
+      zapotřebí předávat programu vstupní parametry.
+    *  Soubor slovníku je organizován velice jednoduše:
+          o každé slovníkový záznam je na novém řádku
+          o  a jednotlivá slova jsou oddělena středníkem.
+    * Součástí projektu jsou dva ukázkové vstupní soubory English.txt a Deutsch.txt.
+
+Seznam souborů
+
+    * Main.hs - modul Main se vstupní funkcí main
+    * Vocabulary.hs - modul Vocabulary, kde se nachází všechny ostatní funkce projektu
+    * English.txt - ukázkový vstupní soubor
+    * Deutsch.txt - ukázkový vstupní soubor
+    * dokumentace.txt - dokumentace projektu (právě čtete)
+
+Reference
+
+    * http://haskell.org
+    * http://learnyouahaskell.com/chapters
+    * http://book.realworldhaskell.org/read/
+
+Zdrojový kód
