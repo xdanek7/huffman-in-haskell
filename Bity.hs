@@ -1,41 +1,49 @@
-module Bity
+module Bity (Bit(..)
+            ,bajtNaBity
+            ,rozdelBityPoOsmi
+            ,prepracujBityNaBajty
+            ,prepracujBajtyNaBity
+            )
 where
 
 import Data.Bits
 import Data.Word
 
--- typ pro uložení jednoho bitu
-data Bit = H | L
+-- | Typ pro uložení jednoho bitu
+-- | Pro práci s daty jako se sekvencí bitů jsem shledal datový typ Word8 nevhodný
+data Bit = H                    -- ^ Představuje binarní jedničku : '1'
+         | L                    -- ^ Představuje binarní nulu     : '0'
   deriving (Eq, Read, Show)
 
 {-|
-  Funkce 'rozdel_bity' rozdělí seznam hodnot typu Bit na seznam seznamů Bitů, každý o stejné délce 8, tedy počet bitů v jednom bajtu.
+  Funkce 'rozdelBityPoOsmi' rozdělí seznam hodnot typu Bit na seznam seznamů Bitů, každý o stejné délce 8, tedy počet bitů v jednom bajtu.
   Jedná se o předpřipravenou funkci 'rozděl_bity'
 -}
-rozdel_bity_po_osmi = rozdel_bity 8
+rozdelBityPoOsmi = rozdel_bity 8
 
 {-|
   Funkce 'rozdel_bity' rozdělí seznam hodnot typu Bit na seznam seznamů Bitů, každý o stejné délce 'n'.
   Pokud je seznam 'x' prázdný je výstupem vždy prázdný seznam.
   Pokud délka seznamu není násobkem n, bude poslední n-tice zarovnána příslušným počtem hodnot L
 -}
-rozdel_bity :: Integer     -- ^ n: Délka každé n-tice
+rozdel_bity :: Int         -- ^ n: Délka každé n-tice
             -> [Bit]       -- ^ x: Vstupní seznam
             -> [[Bit]]     -- ^ Výstup: prázdný seznam, nebo seznam seznamů Bitů, každý o stejné délce 'n'
 rozdel_bity _ [] = []
-rozdel_bity n x = takeBitsWithPadding n x : rozdel_bity (drop n x)
+rozdel_bity n x = takeBitsWithPadding n x : (rozdel_bity n (drop n x))
   where
-    takeBitsWithPadding :: Integer -> [Bit] -> [Bit]
+    takeBitsWithPadding :: Int -> [Bit] -> [Bit]
     takeBitsWithPadding 0 _ = []
     takeBitsWithPadding n [] = L : takeBitsWithPadding (n-1) []
     takeBitsWithPadding n (x:xs) = x : takeBitsWithPadding (n-1) xs
 {-|
-  Inverzní funkce 
+  Seznam seznamů prvků typu Bit přepracuje na seznam prvků typu Word8.
+  To poslouží pro zápis do souboru
 -}
-prepracuj_bity_na_bajty :: [[Bit]]              -- ^ 
-                        -> [Data.Word.Word8]    -- ^
-prepracuj_bity_na_bajty [] = []
-prepracuj_bity_na_bajty x = map spoj x
+prepracujBityNaBajty :: [[Bit]]              -- ^ 'x': Seznam seznamů Bitů
+                     -> [Data.Word.Word8]    -- ^ Výstup: Seznam bajtů v datovém typu Word8
+prepracujBityNaBajty [] = []
+prepracujBityNaBajty x = map spoj x
   where
     spoj :: [Bit] -> Data.Word.Word8
     spoj [] = 0      
@@ -46,15 +54,19 @@ prepracuj_bity_na_bajty x = map spoj x
 {-|
   Inverzní funkce k 'prepracuj_bity_na_bajty'
 -}
-prepracujBajtyNaBity :: [Data.Word.Word8] -> [[Bit]]
+prepracujBajtyNaBity :: [Data.Word.Word8]  -- ^ 
+                     -> [[Bit]]            -- ^
 prepracujBajtyNaBity = map bajtNaBity
 
-{-|
 
--}
 --new_Bajt
 --type bajt = [Bit] -- ^ ! právě 8prvkový seznam
-bajtNaBity :: Data.Word.Word8 -> [Bit]
+
+{-|
+  Převádí Word8 na seznam bitů (typ Bit)
+-}
+bajtNaBity :: Data.Word.Word8    -- ^ 'i': Bajt v typu Word8
+           -> [Bit]              -- ^ Výstup: Bajt jako seznam Bitů
 bajtNaBity i = map (f i) bb
   where
     bb = [7,6..0] 

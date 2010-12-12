@@ -12,6 +12,10 @@ import Huff
 import Cetnost
 import Tree
 
+{-|
+  Hlavní funkce programu.
+  Přečte předaný soubor a podle toho, zda dostala parametr -c nebo -d zavolá buďto funkci encode nebo decode.
+-}
 main :: IO ()
 main = do
   args <- getArgs
@@ -24,11 +28,13 @@ main = do
         napoveda = "\n***Huffman-in-Haskell***\nhttp://github.com/xdanek7/huffman-in-haskell\n\nPoužití:\n\t-c soubor.txt\t\t-- komprimuje soubor\n\t-d soubor.huf\t\t-- dekomprimuje soubor"
 
 
+
+
 zakoduj soubor = do text <- readFile soubor
                     encode (soubor ++ ".huf") text
-
-
-
+{-|
+  Zakóduje 'text' huffmanovým kódem a uloží výsledek do souboru 'soubor'.
+-}
 encode soubor text = do
   --stream <- IO.openBinaryFile soubor WriteMode
   handle <- IO.openBinaryFile soubor IO.WriteMode
@@ -44,7 +50,10 @@ encode soubor text = do
   ByteString.hPut handle huff
   IO.hClose handle
 --  ByteString.hPut handle oddelovac
-  
+
+{-|
+  Vrátí text po dekódování souboru 'soubor'
+-}
 decode soubor = do
   --handle <- IO.openBinaryFile soubor IO.ReadMode
   bytestring <- ByteString.readFile soubor

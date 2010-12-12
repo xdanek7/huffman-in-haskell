@@ -12,8 +12,12 @@ import Tree
 import Typy
 --import Huff
 
-{- Funkci mi poradili na #haskell @ freenode, moje původní byla strašně pomalá-}
-spocitej_cetnost :: [Char] -> [Pismenko]
+{-|
+
+  Funkci mi poradili na #haskell @ freenode, moje původní byla strašně pomalá
+-}
+spocitej_cetnost :: String         -- řetězec v němž počítáme četnosti znaků 
+                 -> [Pismenko]     -- 'Výsledek': seznam dvojic ('znak', počet_jeho_výskytů)
 spocitej_cetnost = map (\xs -> (head xs, fromIntegral (length xs))) . group . sort
 
 -- A to vše směřuje k téhle funkci. Tadá!
