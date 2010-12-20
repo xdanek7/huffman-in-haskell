@@ -1,11 +1,21 @@
-module Huff where
+module Huff(hEncode'''
+           ,hDecode''
+           ,spocitej_cetnost
+           ,stromCetnosti
+           ,prefixovaTabulka
+           ,prefixovaMapa
+           )
+where
 
 import Data.Word
 import Data.Maybe
 import qualified Data.Map
 import Data.List
+-- systémové
+import Data.Function
+import Data.Char
+import Data.Maybe
 
-import Cetnost
 import Tree
 import Typy
 import Bity
@@ -26,12 +36,32 @@ prefixovaTabulka t = prefixujNode [] t
 prefixovaMapa = (Data.Map.fromList . prefixovaTabulka)
 
 
+{-|
+
+  Funkci mi poradili na #haskell @freenode, moje původní byla strašně pomalá, v důsledku nemoudré práce se seznamy
+-}
+spocitej_cetnost :: String         -- řetězec v němž počítáme četnosti znaků 
+                 -> [Pismenko]     -- 'Výsledek': seznam dvojic ('znak', počet_jeho_výskytů)
+spocitej_cetnost = map (\xs -> (head xs, fromIntegral (length xs))) . group . sort
+
+-- A to vše směřuje k téhle funkci. Tadá!
+--FIXME: potřebuji mít někde nějaký znak EOF, konce souboru, aby se dostal do kódovací tabulky
+stromCetnosti :: [Char] -> Strom Char
+stromCetnosti a = zacinaUzlem $ head $ vybuildiSuperStrom fronta
+	where
+		fronta = [vytvorList y x | (x,y) <- pole]
+			where
+				pole = (eot, 1) : spocitej_cetnost a
+				-- znak End Of Transmission, ten použijeme jako znak konce vstupu.
+				eot = chr 0x4
+
 {-
    ** "Definujte funkce hEncode::String→[Word8] a hDecode::[Word8]→String, **
    *    které budou převádět znakové řetězce do binárních dat a naopak."    *
    **************************************************************************
+   
+   
 -}
-
 hEncode::String -> [Word8]
 hEncode text = prepracujBityNaBajty $ rozdelBityPoOsmi seznambitu
   where
