@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Your Site Name</title>
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+<!-- include jQuery library -->
+<script type="text/javascript" src="libs/jquery.min.js"></script>
+<!-- include Cycle plugin -->
+<script type="text/javascript" src="libs/jquery.cycle.all.latest.js"></script>
+<script type="text/javascript">
+function display(){
+$('.hide').css({'display' : 'none'});
+    if (!window.location.hash){
+        $('#pp').css({'display' : 'block'});
+    } else {
+        $('#' + window.location.hash.substring(2)).css({'display' : 'block'});
+    }
+}
+
+$(document).ready(function() {
+    display()
+   $('.nlink').click(function(event){
+   	event.preventDefault();
+        $('.hide').css({'display' : 'none'});
+        $($(this).attr('href')).css({'display' : 'block'});
+        window.location.hash='#_' + $(this).attr('href').substring(1);
+        return false;
+    
+    });
+    $('#slideshow').cycle({
+		fx: 'fade' // choose your transition type, ex: fade, scrollUp, shuffle, etc...
+	});
+
+
+});
+</script>
+
+
+</head>
+
+<body>
+
+<div id="container">
+
+<div id="container-inner">
+
+	<div id="header">
+    	<h1><a href="#">huffman-in-haskell</a></h1>
+  		<p>"huff!"</p>
+        <div class="clear"></div>
+    </div><!-- end header -->
+    
+    <div id="nav">
+    	<ul>
+            <li><a href="#pp" class="nlink">Popis programu</a></li>
+            <li><a href="#ha" class="nlink">Huffmanův algoritmus</a></li>
+            <li><a href="#o" class="nlink">Ostatní</a></li>
+            <li><a href="#p" class="nlink">Přílohy</a></li>
+        </ul>
+    </div><!-- end nav -->
+    
+    <div id="slideshow">
+    	<img src="images/1.jpg" width="920" height="250" alt="bouquet" />
+        <img src="images/2.jpg" width="920" height="250" alt="field" />
+    </div><!-- end slideshow -->
+    
+
+    <div id="main">
+		<div id="content">
+		
+		
+		
+		
+<div id="pp" class="hide">
+			<h2>Popis programu</h2>
+           <p>Program můžeme rozdělit na pět logických celků.</p>
+
+<h4>Tree.hs</h4>
+<p>Ten první je modul Tree.hs, ve kterém je definovaný datový typ Strom a funkce pro práci s ním:</p>
+
+<pre>
+module Tree (Strom(..)
+            ,vytvorList
+            ,spojStromy
+            ,zatridStromDoSeznamu
+            ,vybuildiSuperStrom
+            ,debugTree
+            ,zacinaUzlem
+            )
+</pre>
+<h4>Huff.hs</h4>
+<p>Druhá část je tvořena modulem Huff.hs, který obsahuje funkce potřebné k vytvoření prefixového stromu pro Huffmanovo kódování a funkce hEncode a hDecode, které pomocí takového stromu zakódují/dekódují předložený řetězec.</p>
+<pre>
+module Huff(hEncode'''
+           ,hDecode''
+           ,spocitej_cetnost
+           ,stromCetnosti
+           ,prefixovaTabulka
+           ,prefixovaMapa
+           )
+           </pre>
+<h4>Bity.hs</h4>
+<p>Třetí část je modul Bity.hs. Tento modul obsahuje funkce související s reprezentací binárních hodnot v programu. Pro práci s daty jako se sekvencí bitů jsem shledal datový typ nevhodný a vytvořil si vlastní.</p>
+
+<h4>Typy.hs</h4>
+<p>Rozdělení programu do modulů si vynutilo vyčlenit týpové definice do samostatného modulu, aby se tak zabránilo opakování. Čtvrtý modul Typy.hs obsahuje definice několika tipových aliasu, které jsou používány v několika předchozích modulech.</p>
+
+<h4>Main.hs</h4>
+<p>A nakonec modul Main.hs, vstupní bod programu, který řeší IO, zpracování parametrů programu a volá funkce z modulu Huff.hs.</p>
+</div>
+<div id="ha" class="hide">
+			<h2>Huffmanův algoritmus</h2>
+            <p>David Huffman byl v době, kdy vytvořil po něm nazvané kódování znaků PhD studentem na MIT. Huffman se k problému dostal tak, že jeden z profesorů nabídl studentům, že jim odpustí závěrečnou zkoušku ze svého předmětu, pokud vyřeší problém, který jim zadá.</p>
+
+<p>"The problem was to reduce to the absolute minimum the average number of questions necessary to identify one message—of document, or other object—out of a set of messages, when those messages might not appear with equal frequency, and when the questions had to be phrased so that they could be answered only with either ‘yes’ or ‘no.’ Because computers and modern communications systems use ‘yes/no’ on ‘on/off’ signal almost exclusively, this coding procedure has enormous practical significance in those areas of application."</p> 
+
+<p>--[http://www.huffmancoding.com/my-family/my-uncle/david-huffman]</p>
+
+<p>V té době Huffman ještě něvěděl, že na problému před ním bez výsledku pracovala spousta význačných odborníků, mimo jiné i profesor, který jim úlohu zadal, a směle se pustil do řešení. Když už pomalu docházel k závěru, že je problém nad jeho síly a začal se neochotně učit na zkoušku, nastal průlom.</p>
+
+<p>Průlom nastal, když si Huffman uvědomil, že vytvořit kodovací strom je velmi jednoduché, pokud se postupuje od listů ke kořeni a nikoli od kořene k listům, o což se doposud neúspěšně pokoušeli všichni ostatní, včetně Huffmanova profesora.</p>
+
+<p>Jeho algoritmus je tedy možné implementovat třeba tak, že si znaky z textu spolu s jejich četnostmi umístí do prioritní fronty. Ta funguje podobě jako klasická fronta - vkládáme na konec fronty a odebíráme z jejího začátku, jen s tím rozdílem, že při vkládání do fronty prvek předběhne všechny prvky s nižší prioritou, než má on sám.</p>
+
+<p>Zakódování textu je provedeno tak, že se z prefixového stromu vytvoří slovník a každé slovo se převede na sekvenci bitů jak je definováno ve slovníku.</p>
+</div>
+<div id="o" class="hide">
+			<h2>Ostatní</h2>
+           <h4>Kompatibilita</h4>
+
+<p>Program byl vyzkoušen v interpretrech Hugs i GHCi.</p>
+
+<h4>Možnosti, jak by se dalo navázat</h4>
+
+<p>Drobně modifikované Huffmanovo kódování je integrální součástí algoritmu DEFLATE, používaného programy gzip, zip a například i pro kompresi obrázků PNG (Portable Network Graphic). Pokud by se dosáhlo rychlejšího běhu algoritmu a program se drobně modifikoval (předepsaný způsob uložení Huffmanova stromu, např), dalo by se pokračovat tímhle směrem.</p>
+
+<h4>Kompresní poměr</h4>
+
+<table>
+
+<tr>
+<th>Čistý text</th> <th>komprimovaný huffmanem</th> <th>komprimovaný do Zipu</th>
+</tr>
+<td><b>449K</b> valka_s_mloky.txt</td> <td><b>280K</b> valka_s_mloky.txt.huf </td> <td><b>185K</b> valka_s_mloky.txt.zip</td>
+</tr>
+<tr>
+<td><b>394K</b> The_A_of_B_F.txt</td> <td><b>213K</b> The_A_of_B_F.huf</td> <td><b>123K</b> The_The_A_of_B_F.zip</td>
+</tr>
+</table>
+<br>
+<h5>Závěr</h5>
+<p>Ukázalo se, že Huffmanovo kódování, které pracuje jen se znaky textu je oproti jiným kompresním algoritmům, které pracují s bloky textu, neefektivní.</P>
+
+<h4>Doba komprese</h4>
+<table>
+<tr>
+<th>Vstup:</td> <th>komprese huffmanem</th> <th>komprese Zipem</th>
+</tr>
+<tr>
+<th>
+valka_s_mloky.txt
+</th>
+<td>
+<pre>
+real	0m2.800s
+user	0m2.720s
+sys	0m0.060s
+</pre>
+</td>
+<td>
+<pre>
+real	0m0.054s
+user	0m0.060s
+sys	0m0.000s
+</pre>
+</td>
+</tr>
+<tr>
+<th>
+The_A_of_B_F.txt
+</th>
+<td>
+<pre>
+real	0m2.197s
+user	0m2.160s
+sys	0m0.040s
+</pre>
+</td>
+<td>
+<pre>
+real	0m0.060s
+user	0m0.050s
+sys	0m0.010s
+</pre>
+</td>
+</tr>
+</table>
+<br>
+<h5>Závěr</h5>
+<p>Při vší své neefektivitě je tato implementace huffmanova kódování v porovnání se Zipem mimořádně pomalá. To je z velké části způsobeno tím, že budujeme huffmanův strom pro každý vstupní soubor, což přidává režiji navíc</p>
+
+<h4>Formát vstupu</h4>
+<ul>
+    <li>Vstupem pro kódování a výstupem z dekódování je libovolný textový soubor.
+     <li>Výsupem po kódování a vstupem pro dekódování je soubor s řetězcem .huf za jménem, skládající se ze tří částí: <ol><li>použitého Huffmanova stromu tak, jak jej vypíše funkce show, <li>oddělovače ~ znaku 0x04 a <li>vlastních zakódovaných dat.</ol>
+     </ul>
+</div>
+<div id="p" class="hide">
+			<h2>Přílohy</h2>
+			<br><br><br>
+<a href=".."><img src="images/downloads_banner(stusupport.ignou.ac.in).png" style="margin: 0 auto 0 auto; "></a>
+</div>
+		
+		
+		
+		
+        </div><!-- end content -->
+        
+        <div class="sidebar">
+          
+          <h4>Reference</h4>
+              <ul>
+                <li><a href="http://haskell.org">haskell.org </a></li>
+                <li><a href="http://learnyouahaskell.com/chapters">learnyouahaskell.com </a></li>
+                <li><a href="http://book.realworldhaskell.org/read/">book.realworldhaskell.org </a></li>
+                <li><a href="http://www.zlib.net/feldspar.html">zlib.net/feldspar.html </a></li>
+                <li><a href="http://en.wikipedia.org/wiki/Huffman_coding">en.wikipedia.org/wiki/Huffman_coding </a></li>
+                <li><a href="http://en.wikipedia.org/wiki/Portable_Network_Graphics">en.wikipedia.org/wiki/Portable_Network_Graphics </a></li>
+              </ul>
+              
+              <h4>Seznam souborů</h4>
+
+
+
+				<div class="news-item">
+					<span class="date">Main.hs</span>
+					Modul Main se vstupní funkcí main
+                </div>
+
+				<div class="news-item">
+					<span class="date">Huff.hs</span>
+					Modul huff s funkcemi hEncode a hDecode
+				</div>
+				<div class="news-item">
+					<span class="date">Typy.hs</span>
+					Modul Typy sdružující typové deklarace
+				</div>
+				
+								<div class="news-item">
+					<span class="date">Bity.hs</span>
+					Modul Bity pro práci s jednotlivými bity
+				</div>
+				
+
+				<div class="news-item">
+					<span class="date">/testovaci_texty/valka_s_mloky.txt</span>
+					Ukázkový vstupní soubor
+                </div>
+                
+		<div class="news-item">
+					<span class="date">/testovaci_texty/The_Autobiography_of_Benjamin_Franklin.txt</span>
+					Ukázkový vstupní soubor
+                </div>
+                
+                		<div class="news-item">
+					<span class="date">dokumentace.html</span>
+					Dokumentace projektu (právě čtete)
+                </div>
+                
+           
+        </div><!-- end sidebar -->
+        
+    	<div class="clear"></div>
+        
+    </div><!-- end main -->
+    
+    </div><!-- end container-inner -->
+    
+</div><!-- end container -->
+
+<div id="footer">
+	<p>&copy; huffman-in-haskell 2010. Design by <a href="http://www.electrictowelrail.org.uk">Electric Towel Rail</a> | <a href="http://www.electrictowelrail.org.uk/chrome-towel-rail/">Chrome Towel Rail</a> | Courtesy <a href="http://www.openwebdesign.org" target="_blank">OWD</a>, Thanks to 
+
+
+<a href="http://www.ecommercewebsites.com.au/" target="_blank">Web Design</a></p>
+</div><!-- end footer -->
+
+</body>
+</html>
